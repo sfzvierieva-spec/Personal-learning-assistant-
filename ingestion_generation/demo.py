@@ -16,7 +16,7 @@ from profile_and_prompts.profile.builder import build_profile
 from profile_and_prompts.prompt_generator.generator import generate_system_prompt
 from profile_and_prompts.tests.test_end_to_end import FAKE_USERS
 
-from . import SUPPORTED_FORMATS, extract_text, generate_content
+from . import SUPPORTED_FORMATS, ExtractionError, GenerationError, extract_text, generate_content
 
 
 def main() -> None:
@@ -32,10 +32,13 @@ def main() -> None:
     answers = next(a for name, a in FAKE_USERS.items() if name.startswith(f"User {args.user}"))
     system_prompt = generate_system_prompt(build_profile(answers))
 
-    course_text = extract_text(args.course)
     context = {"num_items": args.num_items, "exam_date": args.exam_date}
-    result = generate_content(course_text, system_prompt, args.format,
-                              {k: v for k, v in context.items() if v})
+    try:
+        course_text = extract_text(args.course)
+        result = generate_content(course_text, system_prompt, args.format,
+                                  {k: v for k, v in context.items() if v})
+    except (ExtractionError, GenerationError) as exc:
+        raise SystemExit(f"Error: {exc}")
 
     output = json.dumps(result, ensure_ascii=False, indent=2)
     if args.out:
