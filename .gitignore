@@ -24,3 +24,6 @@ env/
 .env
 .env.local
 *.key
+
+# Personal dev tool (not part of the module deliverable)
+try_it.py
