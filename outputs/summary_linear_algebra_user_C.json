@@ -1,0 +1,99 @@
+{
+  "format": "summary",
+  "title": "Linear Algebra II",
+  "language": "en",
+  "content": {
+    "sections": [
+      {
+        "heading": "0 Course Structure and Time Allocation",
+        "points": [
+          "Hey there! Let's get our bearings first. The course is broken down into four clear chunks: Part I takes 12 hours, Part II.1 takes 12 hours, Part II.2 takes 6 hours, and Part III wraps up with 6 hours. Anything flagged with a star (⋆) or sitting in Section 4 is reserved for the Advanced Mathematics track, so you can breathe easy knowing those parts are not required for regular exams.",
+          "Here is how testing is organized across the semester. We kick off on February 9, 2026, with an 8-question multiple-choice quiz on Evalmee lasting 30 minutes, covering Exercises 1 through 17. Next comes a 60-minute paper exam on March 9, 2026, covering all non-starred exercises. Finally, there is a comprehensive 90-minute written exam in June 2026 that also covers all non-starred material. Take a moment to reflect: how can pacing yourself through the non-starred core exercises each week save you from last-minute stress before March?"
+        ]
+      },
+      {
+        "heading": "1 Determinant",
+        "points": [
+          "We build determinants from the ground up using permutations in the symmetric group S_n, which contains all n! bijections of the set of integers from 1 to n. Any permutation breaks down into cycles and transpositions (which just swap two elements). Its signature is defined as (-1)^p, where p counts those transpositions. Using this, the determinant of an n-by-n matrix A sums over all permutations the product of entries times the permutation's signature. For example, in Exercise 1, we write out S_1, S_2, and S_3, and see how a 2-by-2 matrix [[a, b], [c, d]] simply works out to ad - bc.",
+          "Determinants act as the ultimate test for linear independence, invertibility, and geometric scaling. If det(A) is non-zero, the matrix is invertible, its column vectors form a basis, and a system like Ax = b has a unique solution. For instance, in Exercise 4, computing the determinant of a 3-by-3 matrix directly gives the volume of the parallelepiped formed by its columns. In Exercise 7, setting det(A) != 0 gives the exact conditions on a parameter m for invertibility. Determinants also unlock discrete patterns: in Exercise 11, the determinant of a power of [[1, 1], [1, 0]] neatly proves Cassini's identity for Fibonacci numbers, F_{n+1}F_{n-1} - F_n^2 = (-1)^n. How does picturing determinant as an area or volume help you instantly see why a zero determinant means the matrix collapses space?"
+        ]
+      },
+      {
+        "heading": "2 Exercises on Endomorphism Reduction",
+        "points": [
+          "Section 2.1 focuses on the practical mechanics of diagonalizing a matrix into M = P D P^(-1). We look for eigenvalues (roots of the characteristic polynomial) and their matching eigenvectors to construct our invertible change-of-basis matrix P and diagonal matrix D. In Exercise 12, we practice this speed-run style on 2-by-2 and 3-by-3 matrices like M_1 = [[0, 1], [-2, 3]]. In Exercise 14, we see that diagonalizability can be spotted from several angles at once: factoring the characteristic polynomial, checking matrix rank, or noticing polynomial relations like A^2. We also see that when a matrix fails to be diagonalizable—like matrix C in Exercise 17—the Cayley-Hamilton theorem gives us an annihilating polynomial that still lets us compute powers C^n and invert C efficiently.",
+          "Section 2.2 puts these tools to work on real-world systems. In Exercise 24, a predator-prey model tracks antelopes (a_n) and lions (l_n) over time via U_{n+1} = A U_n. By finding eigenvalues and diagonalizing A = P D P^(-1), we compute A^n effortlessly, letting us determine the exact long-term survival of both populations as n approaches infinity. We also explore the matrix exponential exp(M) = sum M^k / k! in Exercise 26, discovering that det(exp(M)) = exp(tr(M)). Exercise 27 introduces stochastic matrices whose rows sum to 1, showing that 1 is always an eigenvalue and powers M^n remain stochastic. Why is turning a messy coupled system into decoupled diagonal coordinates such a game-changer for predicting the distant future?"
+        ]
+      },
+      {
+        "heading": "3 Theoretical Exercises",
+        "points": [
+          "This theoretical section unites everything we know about diagonalizability. Exercise 28 proves the core equivalence: a matrix A is diagonalizable over R if and only if its characteristic polynomial splits with algebraic multiplicity equal to geometric multiplicity for every eigenvalue, which is equivalent to R^n splitting into a direct sum of eigenspaces. Exercise 29 and 30 nail down crucial spectral truths: the trace is the sum of eigenvalues, the determinant is the product of eigenvalues, and 0 belongs to the spectrum if and only if the matrix is non-invertible. For example, if Sp(A) = {0, 1, 2}, its determinant is immediately 0, meaning it cannot be inverted.",
+          "We also explore structural families of matrices. Exercise 31 proves similarity (A = P B P^(-1)) is an equivalence relation that preserves determinants, traces, rank, characteristic polynomials, and spectra. Exercise 33 unpacks projection matrices satisfying P^2 = P, showing their eigenvalues can only ever be 0 or 1, decomposing space cleanly into ker(P) direct sum Im(P). Exercise 34 examines nilpotent matrices, where M^p = 0; their only eigenvalue is 0, their trace and determinant are both 0, and their nilpotency index never exceeds n. What everyday actions around you behave like a projection—leaving things completely unchanged once applied a second time?"
+        ]
+      },
+      {
+        "heading": "4 Optional Exercises",
+        "points": [
+          "The optional advanced track ventures into specialized linear algebra gems. Exercise 35 investigates the Vandermonde matrix V(alpha_1, ..., alpha_n), using polynomial roots to factorize its determinant into a product of differences (alpha_j - alpha_i). Exercises 36 and 37 look at limits of powers lim A^n = B and matrices whose spectra consist purely of integers.",
+          "Finally, Exercises 38 and 39 bridge into modern algorithms and advanced algebra. Exercise 38 models web navigation using Google's PageRank, where a directed graph's stochastic transition matrix and a damping factor alpha guarantee a unique stationary vector. Exercise 39 formalizes the minimal polynomial mu_A—the monic annihilating polynomial of lowest degree. It divides the characteristic polynomial, shares the exact same roots (the spectrum), and reveals that A is diagonalizable if and only if mu_A splits into distinct linear factors. Reflect on this: how does adding a tiny random jump factor alpha in PageRank prevent a random surfer from getting stuck in an infinite loop on the web?"
+        ]
+      }
+    ],
+    "key_terms": [
+      {
+        "term": "Permutation (Symmetric Group S_n)",
+        "definition": "A bijection from the finite set [[1, n]] onto itself, with the set of all such bijections forming the symmetric group S_n of size n!. Analogy: Think of it like a game of musical chairs where every single player must switch to a chair; everyone ends up seated, but in a rearranged order."
+      },
+      {
+        "term": "Transposition",
+        "definition": "A 2-cycle permutation that swaps exactly two elements while leaving every other element fixed. Analogy: Think of two people trading seats in a movie theater while nobody else in the row moves an inch."
+      },
+      {
+        "term": "Signature (of a Permutation)",
+        "definition": "The number (-1)^p, where p is the total number of transpositions needed to produce the permutation. Analogy: Think of a standard two-way light switch: flipping it any odd number of times leaves the light in a different state, while any even number of flips returns it to where it started."
+      },
+      {
+        "term": "Determinant",
+        "definition": "A scalar calculated from a square matrix by summing over all permutations the signed product of chosen entries, indicating invertibility when non-zero. Analogy: Think of an inflatable balloon's volume gauge: if the scale factor drops to zero, the whole shape has been crushed flat into zero volume and cannot be blown back out."
+      },
+      {
+        "term": "Diagonalizable Matrix",
+        "definition": "A square matrix M that can be written in the form PDP^(-1), where D is a diagonal matrix of eigenvalues and P is an invertible matrix of eigenvectors. Analogy: Think of adjusting your perspective or untangling messy crossed puppet strings so that each string pulls purely in one single independent direction without interfering with the others."
+      },
+      {
+        "term": "Annihilating Polynomial",
+        "definition": "A polynomial P such that plugging in the matrix yields the zero matrix, P(M) = 0. Analogy: Think of a master reset combination on an electronic keypad that completely clears the screen back to total zero."
+      },
+      {
+        "term": "Stochastic Matrix",
+        "definition": "A square matrix with non-negative entries between 0 and 1 whose entries along each row sum up to exactly 1. Analogy: Think of a restaurant menu where each row represents a customer's total budget of 100%, divided up entirely among different courses."
+      },
+      {
+        "term": "Similar Matrices",
+        "definition": "Two square matrices A and B for which there exists an invertible matrix P such that A = P B P^(-1). Analogy: Think of describing the exact same musical tune in two different musical keys; the notes look completely different on the page, but the melody and harmonies are identical."
+      },
+      {
+        "term": "Projection Matrix",
+        "definition": "A matrix P satisfying the identity P^2 = P, sending any vector onto its image along its kernel. Analogy: Think of casting a silhouette on a wall: once an object casts its flat shadow, shining the light a second time on that shadow changes nothing at all."
+      },
+      {
+        "term": "Nilpotent Matrix",
+        "definition": "A matrix M for which some positive power equals the zero matrix, M^p = 0. Analogy: Think of an echo bouncing down a canyon that completely dies out into absolute silence after a fixed number of bounces."
+      },
+      {
+        "term": "Minimal Polynomial",
+        "definition": "The unique monic polynomial of smallest possible degree that annihilates the matrix A. Analogy: Think of the absolute shortest, most concise instruction manual that tells you the exact cycle needed to return a machine to factory default."
+      }
+    ]
+  },
+  "meta": {
+    "strategy": "single_pass",
+    "chunks": 1,
+    "input_tokens_estimate": 4892,
+    "model": "gemini-flash-latest",
+    "retried": false,
+    "user_context": {},
+    "warnings": []
+  }
+}
