@@ -6,7 +6,7 @@ Runs each fake user through the full pipeline:
                           -> generate_system_prompt
 
 and prints the outputs side by side so the personalization is visibly
-different across profiles (that is the point of the module).
+different across profiles.
 
 Run it two ways:
     python -m profile_and_prompts.tests.test_end_to_end   # pretty-print report
@@ -23,40 +23,42 @@ from ..prompt_generator.generator import generate_system_prompt
 # Three deliberately contrasting fake users.
 # --------------------------------------------------------------------------- #
 FAKE_USERS: dict[str, dict] = {
-    # A: self-testing, spaced, short sessions, easily blocked, wants why + cards.
-    "User A - the spaced self-tester": {
-        "q1_recall": "active_recall",
-        "q2_spacing": "spaced",
-        "q3_session_length": "short_25",
-        "q4_chronotype": "morning",
-        "q5_blockers": ["procrastination", "overload"],
-        "q6_output_formats": ["flashcards", "quizzes"],
-        "q7_elaboration": "deep_why",
-        "q8_depth": "standard",
+    # A: MCQ crammer — wants flashcards + quiz, mainly testing, cheat-sheet
+    # style, dense, definitions only, bullet lists.
+    "User A - the MCQ crammer": {
+        "q1_main_format": ["flashcards", "quiz"],
+        "q2_density": "dense",
+        "q3_explanation_style": "definition_only",
+        "q4_struggle": ["hard_to_remember"],
+        "q5_study_goal": "mcq_exam",
+        "q6_self_testing": "mainly_testing",
+        "q7_tone": "raw_notes",
+        "q8_visual_layout": "bullet_lists",
     },
-    # B: re-reader, crams, long evening sessions, wants concise deep summaries.
-    "User B - the deep-dive crammer": {
-        "q1_recall": "passive_review",
-        "q2_spacing": "massed",
-        "q3_session_length": "long_90plus",
-        "q4_chronotype": "evening",
-        "q5_blockers": ["distraction"],
-        "q6_output_formats": ["summaries", "worked_examples"],
-        "q7_elaboration": "surface_facts",
-        "q8_depth": "in_depth",
-        # Non-cognitive UI preference, explicitly overridden here.
-        "tone_preference": "warm",
+    # B: Practical applier — worked examples, step-by-step, teacher voice,
+    # struggles with application.
+    "User B - the practical applier": {
+        "q1_main_format": ["worked_examples", "synthesis_sheet"],
+        "q2_density": "balanced",
+        "q3_explanation_style": "step_by_step",
+        "q4_struggle": ["hard_to_apply", "too_abstract"],
+        "q5_study_goal": "practical_application",
+        "q6_self_testing": "reading_with_checks",
+        "q7_tone": "teacher_voice",
+        "q8_visual_layout": "mixed_with_diagrams",
     },
-    # C: mixed everything, low confidence, overview only, adds a free-text note.
-    "User C - the cautious generalist": {
-        "q1_recall": "mixed",
-        "q2_spacing": "mixed",
-        "q3_session_length": "medium_50",
-        "q4_chronotype": "variable",
-        "q5_blockers": ["low_self_efficacy"],
-        "q6_output_formats": ["quizzes"],
-        "q7_elaboration": "mixed",
-        "q8_depth": {"value": "overview", "other": "I get lost when there is too much jargon"},
+    # C: Curious reader — synthesis + mindmap, spacious, friend-explaining,
+    # personal understanding, adds a free-text nuance.
+    "User C - the curious reader": {
+        "q1_main_format": ["synthesis_sheet", "mindmap"],
+        "q2_density": "spacious",
+        "q3_explanation_style": "definition_plus_analogy",
+        "q4_struggle": ["too_abstract", "boring"],
+        "q5_study_goal": "personal_understanding",
+        "q6_self_testing": "mainly_reading",
+        "q7_tone": "friend_explaining",
+        "q8_visual_layout": {"value": "structured_paragraphs",
+                             "other": "I get lost when there is too much jargon"},
     },
 }
 
@@ -70,12 +72,12 @@ def _run(answers: dict):
 
 
 # --------------------------------------------------------------------------- #
-# Pytest assertions: the pipeline runs, and personalization is actually visible.
+# Pytest assertions.
 # --------------------------------------------------------------------------- #
 def test_pipeline_runs_for_all_users():
     for answers in FAKE_USERS.values():
         profile, paragraph, bullets, system_prompt = _run(answers)
-        assert paragraph.startswith("Based on your answers")
+        assert paragraph.startswith("Here's what I'm reading from your answers")
         assert bullets
         for tag in ("<role>", "<user_profile>", "<output_style>", "<forbidden>"):
             assert tag in system_prompt
@@ -83,15 +85,14 @@ def test_pipeline_runs_for_all_users():
 
 def test_personalization_is_visible():
     prompts = [_run(a)[3] for a in FAKE_USERS.values()]
-    # All three generated prompts must differ from each other.
     assert len(set(prompts)) == len(prompts)
 
 
 def test_free_text_other_is_preserved():
-    profile, _, bullets, prompt = _run(FAKE_USERS["User C - the cautious generalist"])
-    assert profile.free_text_notes  # captured, not dropped
-    assert any("jargon" in b for b in bullets)  # surfaced to the user
-    assert "jargon" in prompt  # carried into the system prompt
+    profile, _, bullets, prompt = _run(FAKE_USERS["User C - the curious reader"])
+    assert profile.free_text_notes
+    assert any("jargon" in b for b in bullets)
+    assert "jargon" in prompt
 
 
 def test_guardrails_present_and_identical():

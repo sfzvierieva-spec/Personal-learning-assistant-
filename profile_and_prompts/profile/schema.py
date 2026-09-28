@@ -2,24 +2,14 @@
 
 Defines the ``Profile`` model and its typed enums. This is the *contract*
 between my module and the rest of the app: the profile builder produces a
-validated ``Profile``, and the prompt generator consumes it. Fields are typed
-enums wherever possible so downstream code never has to parse free strings.
+validated ``Profile``, and the prompt generator consumes it.
 
 Every enum value here MUST match an option ``value`` in
-``questionnaire/questions.py`` (or a default set in ``profile/builder.py``).
+``questionnaire/questions.py``.
 
-Fields and the cognitive-science axis each one encodes:
-- recall_preference        (Roediger & Karpicke, testing effect)
-- spacing_preference       (Cepeda et al.; Ebbinghaus forgetting curve)
-- session_length           (Sweller cognitive load; ultradian rhythms)
-- chronotype               (time-of-day performance)
-- blockers (list)          (Steel procrastination; Bandura self-efficacy)
-- preferred_output_formats (list) (Paivio dual coding; worked examples)
-- elaboration_preference   (Chi et al., self-explanation)
-- tone_preference          (user preference; NOT a cognitive construct)
-- depth_preference         (Sweller cognitive load / level of detail)
-- free_text_notes (list)   (captures every "Other" answer; never dropped)
-- metadata                 (timestamp, questionnaire_version)
+Every field encodes a DIRECT output-shaping decision — no meta questions
+about how the person learns in general, only decisions that change what the
+generated study material looks like.
 """
 
 from __future__ import annotations
@@ -31,86 +21,80 @@ from pydantic import BaseModel, Field
 
 
 # --------------------------------------------------------------------------- #
-# Typed enums. The string values are the storage/contract format shared with
-# questions.py. Using str-based enums keeps JSON serialization human-readable.
+# Typed enums. String values are the storage/contract format shared with
+# questions.py. str-based enums keep JSON serialization human-readable.
 # --------------------------------------------------------------------------- #
-class RecallPreference(str, Enum):
-    """Retrieval practice vs. passive review (Roediger & Karpicke 2006)."""
+class MainFormat(str, Enum):
+    """Primary output format the learner wants to receive."""
 
-    ACTIVE_RECALL = "active_recall"
-    PASSIVE_REVIEW = "passive_review"
-    MIXED = "mixed"
-
-
-class SpacingPreference(str, Enum):
-    """Spaced vs. massed practice (Cepeda et al. 2006; Ebbinghaus)."""
-
-    SPACED = "spaced"
-    MASSED = "massed"
-    MIXED = "mixed"
-
-
-class SessionLength(str, Enum):
-    """Sustainable focus span per session (Sweller; ultradian rhythms)."""
-
-    SHORT_25 = "short_25"
-    MEDIUM_50 = "medium_50"
-    LONG_90PLUS = "long_90plus"
-
-
-class Chronotype(str, Enum):
-    """Time of day of best concentration (chronotype research)."""
-
-    MORNING = "morning"
-    AFTERNOON = "afternoon"
-    EVENING = "evening"
-    VARIABLE = "variable"
-
-
-class Blocker(str, Enum):
-    """Sources of disengagement (Steel 2007; Sweller; Bandura 1997)."""
-
-    PROCRASTINATION = "procrastination"
-    OVERLOAD = "overload"
-    DISTRACTION = "distraction"
-    LOW_SELF_EFFICACY = "low_self_efficacy"
-
-
-class OutputFormat(str, Enum):
-    """Preferred study-material formats (Paivio; Sweller & Cooper 1985)."""
-
+    SYNTHESIS_SHEET = "synthesis_sheet"
     FLASHCARDS = "flashcards"
-    SUMMARIES = "summaries"
-    QUIZZES = "quizzes"
+    QUIZ = "quiz"
+    MINDMAP = "mindmap"
     WORKED_EXAMPLES = "worked_examples"
 
 
-class ElaborationPreference(str, Enum):
-    """Depth of elaboration / self-explanation (Chi et al. 1994)."""
+class Density(str, Enum):
+    """Content density — how long / aired out the material is."""
 
-    DEEP_WHY = "deep_why"
-    SURFACE_FACTS = "surface_facts"
-    MIXED = "mixed"
-
-
-class TonePreference(str, Enum):
-    """Preferred tone of generated material.
-
-    Not a cognitive-science construct: this is a pure user/UI preference. It
-    has no dedicated questionnaire item in v1 and defaults to ``NEUTRAL``.
-    """
-
-    NEUTRAL = "neutral"
-    WARM = "warm"
-    DIRECT = "direct"
+    DENSE = "dense"
+    BALANCED = "balanced"
+    SPACIOUS = "spacious"
 
 
-class DepthPreference(str, Enum):
-    """Preferred level of detail (Sweller, cognitive load)."""
+class ExplanationStyle(str, Enum):
+    """How each concept should be explained."""
 
-    OVERVIEW = "overview"
-    STANDARD = "standard"
-    IN_DEPTH = "in_depth"
+    DEFINITION_ONLY = "definition_only"
+    DEFINITION_PLUS_EXAMPLE = "definition_plus_example"
+    DEFINITION_PLUS_ANALOGY = "definition_plus_analogy"
+    STEP_BY_STEP = "step_by_step"
+
+
+class Struggle(str, Enum):
+    """What tends to lose the learner in a course (multi-select)."""
+
+    TOO_ABSTRACT = "too_abstract"
+    TOO_DENSE = "too_dense"
+    HARD_TO_REMEMBER = "hard_to_remember"
+    HARD_TO_APPLY = "hard_to_apply"
+    BORING = "boring"
+
+
+class StudyGoal(str, Enum):
+    """What the learner is preparing for — shapes assessment items."""
+
+    MCQ_EXAM = "mcq_exam"
+    ESSAY_EXAM = "essay_exam"
+    ORAL_EXAM = "oral_exam"
+    PRACTICAL_APPLICATION = "practical_application"
+    PERSONAL_UNDERSTANDING = "personal_understanding"
+
+
+class SelfTesting(str, Enum):
+    """Balance between reading and self-testing."""
+
+    MAINLY_READING = "mainly_reading"
+    READING_WITH_CHECKS = "reading_with_checks"
+    MAINLY_TESTING = "mainly_testing"
+
+
+class Tone(str, Enum):
+    """Preferred voice / register of the generated text."""
+
+    TEXTBOOK = "textbook"
+    TEACHER_VOICE = "teacher_voice"
+    FRIEND_EXPLAINING = "friend_explaining"
+    RAW_NOTES = "raw_notes"
+
+
+class VisualLayout(str, Enum):
+    """Preferred visual layout of the text."""
+
+    STRUCTURED_PARAGRAPHS = "structured_paragraphs"
+    BULLET_LISTS = "bullet_lists"
+    TABLES_WHEN_COMPARATIVE = "tables_when_comparative"
+    MIXED_WITH_DIAGRAMS = "mixed_with_diagrams"
 
 
 # --------------------------------------------------------------------------- #
@@ -131,7 +115,6 @@ class FreeTextNote(BaseModel):
 class ProfileMetadata(BaseModel):
     """Traceability metadata attached to every profile."""
 
-    # Default factory stamps creation time in UTC at build time.
     timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     questionnaire_version: str
 
@@ -142,29 +125,21 @@ class ProfileMetadata(BaseModel):
 class Profile(BaseModel):
     """Validated, structured learner profile.
 
-    This object is the single source of truth passed to the prompt generator.
-    All enum fields are guaranteed valid by pydantic; list fields may be empty
-    (e.g. a user who reports no blockers) but are never ``None``.
+    Single source of truth passed to the prompt generator. Every field is a
+    typed enum guaranteed valid by pydantic; list fields may be empty but are
+    never ``None``.
     """
 
-    # Single-choice cognitive axes.
-    recall_preference: RecallPreference
-    spacing_preference: SpacingPreference
-    session_length: SessionLength
-    chronotype: Chronotype
-    elaboration_preference: ElaborationPreference
-    depth_preference: DepthPreference
+    main_format: list[MainFormat] = Field(default_factory=list)
+    density: Density
+    explanation_style: ExplanationStyle
+    struggle: list[Struggle] = Field(default_factory=list)
+    study_goal: StudyGoal
+    self_testing: SelfTesting
+    tone: Tone
+    visual_layout: VisualLayout
 
-    # Multi-choice axes (order-insensitive; may be empty).
-    blockers: list[Blocker] = Field(default_factory=list)
-    preferred_output_formats: list[OutputFormat] = Field(default_factory=list)
-
-    # Non-cognitive user preference; defaults to neutral (no v1 question).
-    tone_preference: TonePreference = TonePreference.NEUTRAL
-
-    # Free-text nuance and traceability.
     free_text_notes: list[FreeTextNote] = Field(default_factory=list)
     metadata: ProfileMetadata
 
-    # Reject unknown fields so a malformed answer set fails loudly, not silently.
     model_config = {"extra": "forbid"}

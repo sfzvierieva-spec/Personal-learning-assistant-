@@ -1,242 +1,228 @@
 """Question bank for the learner-profiling questionnaire.
 
 This module holds the 8 questions of the questionnaire as structured Python
-data (no UI, no I/O). Each question maps to a single cognitive-science axis and
-carries a short research reference so every item can be defended at the oral
-exam. The UI teammate renders this data; the profile builder consumes the
-collected answers.
+data (no UI, no I/O). Each question probes a DIRECT output-shaping decision:
+if a question does not visibly change the study material the app produces,
+it does not belong here.
 
-Design decisions (agreed with the module owner):
-- 8 questions, one cognitive-science construct each
-  (questionnaire-fatigue research: Galesic & Bosnjak 2009).
+Design principles (agreed with the module owner):
+- 8 questions (questionnaire-fatigue research: Galesic & Bosnjak 2009).
 - Linear order (no adaptive branching in v1).
 - Neutral tone: a well-designed research questionnaire, not a chatbot.
 - Every question is multiple choice (3-4 options) + an optional free-text
   "Other" field, so users can nuance their answer.
+- Every question changes the OUTPUT — format, density, explanation style,
+  what the material pre-empts, goal, self-check density, tone, layout.
 
 The value strings below are the ONLY contract with the profile builder: they
 must stay in sync with the enums in ``profile/schema.py``.
-
-IMPORTANT (evidence base): questions are grounded in cognitive science, NOT in
-the discredited "learning styles" / VAK model (Pashler et al. 2008).
 """
 
 from __future__ import annotations
 
 # Bumped whenever the question set changes; stored in every profile's metadata
 # so a profile can always be traced back to the exact instrument that produced it.
-QUESTIONNAIRE_VERSION = "1.0"
+QUESTIONNAIRE_VERSION = "2.0"
 
 
 # Each question is a dict with a stable shape so the UI can render it generically:
 #   - id             : stable string key (used as the answer key)
 #   - axis           : the profile field this question feeds
-#   - research_ref   : the cognitive-science concept behind the question
 #   - question       : the English text shown to the user (neutral tone)
 #   - options        : 3-4 dicts, each {"label": <shown>, "value": <stored>}
 #   - multi_select   : True if the user may pick several options (-> list field)
 #   - allow_other    : always True; free-text nuance captured as "Other"
-#   - rationale      : what the answer tells us about the learner
+#   - rationale      : what concrete output decision this answer drives
 QUESTIONS: list[dict] = [
     # -------------------------------------------------------------------------
-    # Q1 - Retrieval practice (active recall) vs. passive review.
-    # research_ref: Roediger & Karpicke (2006), the "testing effect": retrieving
-    # information strengthens memory more than re-reading it.
-    # rationale: tells us whether to lead with self-testing (flashcards, quizzes)
-    # or with review material (summaries) as the primary study format.
+    # Q1 - Primary output format(s) the learner wants to receive.
+    # OUTPUT DECISION: which artifact(s) the downstream agent produces.
     # -------------------------------------------------------------------------
     {
-        "id": "q1_recall",
-        "axis": "recall_preference",
-        "research_ref": "Roediger & Karpicke 2006 (testing effect)",
+        "id": "q1_main_format",
+        "axis": "main_format",
         "question": (
-            "When you want to make sure you have really learned something, "
-            "what do you usually do?"
-        ),
-        "options": [
-            {"label": "I test myself (recall it from memory, do practice questions).",
-             "value": "active_recall"},
-            {"label": "I re-read or review my notes and the material.",
-             "value": "passive_review"},
-            {"label": "I do both, depending on the subject.",
-             "value": "mixed"},
-        ],
-        "multi_select": False,
-        "allow_other": True,
-        "rationale": "Chooses whether generated material leads with retrieval "
-                     "(self-testing) or with review artifacts.",
-    },
-    # -------------------------------------------------------------------------
-    # Q2 - Spaced practice vs. massed practice (cramming).
-    # research_ref: Cepeda et al. (2006) meta-analysis; Ebbinghaus forgetting
-    # curve: distributing study over time beats cramming for long-term retention.
-    # rationale: tells us whether to package material for spaced review
-    # (small sets over days) or as one dense block.
-    # -------------------------------------------------------------------------
-    {
-        "id": "q2_spacing",
-        "axis": "spacing_preference",
-        "research_ref": "Cepeda et al. 2006; Ebbinghaus (spacing effect)",
-        "question": "How do you usually schedule your studying before a deadline?",
-        "options": [
-            {"label": "A little at a time, spread across several days or weeks.",
-             "value": "spaced"},
-            {"label": "In one or a few long sessions close to the deadline.",
-             "value": "massed"},
-            {"label": "It varies a lot depending on the workload.",
-             "value": "mixed"},
-        ],
-        "multi_select": False,
-        "allow_other": True,
-        "rationale": "Chooses whether material is chunked for spaced repetition "
-                     "or delivered as a single dense block.",
-    },
-    # -------------------------------------------------------------------------
-    # Q3 - Sustainable focus span / cognitive load per session.
-    # research_ref: Sweller (cognitive load theory); ultradian rhythms: sustained
-    # focus degrades over long unbroken sessions.
-    # rationale: sizes the chunks of generated material to the user's session
-    # length so a single sitting is completable.
-    # -------------------------------------------------------------------------
-    {
-        "id": "q3_session_length",
-        "axis": "session_length",
-        "research_ref": "Sweller (cognitive load); ultradian focus rhythms",
-        "question": "How long can you usually stay focused before you need a real break?",
-        "options": [
-            {"label": "About 25 minutes or less.", "value": "short_25"},
-            {"label": "Around 45-60 minutes.", "value": "medium_50"},
-            {"label": "90 minutes or more.", "value": "long_90plus"},
-        ],
-        "multi_select": False,
-        "allow_other": True,
-        "rationale": "Sizes each unit of generated material to a completable "
-                     "single sitting.",
-    },
-    # -------------------------------------------------------------------------
-    # Q4 - Chronotype / time-of-day performance.
-    # research_ref: chronotype research: cognitive performance peaks at different
-    # times of day for different people (morning vs. evening types).
-    # rationale: lets the downstream agent suggest scheduling and frame the
-    # workload for the user's peak window (advisory only).
-    # -------------------------------------------------------------------------
-    {
-        "id": "q4_chronotype",
-        "axis": "chronotype",
-        "research_ref": "Chronotype / time-of-day performance research",
-        "question": "At what time of day do you concentrate best?",
-        "options": [
-            {"label": "Morning.", "value": "morning"},
-            {"label": "Afternoon.", "value": "afternoon"},
-            {"label": "Evening or night.", "value": "evening"},
-            {"label": "It changes from day to day.", "value": "variable"},
-        ],
-        "multi_select": False,
-        "allow_other": True,
-        "rationale": "Advises scheduling and workload framing for the user's "
-                     "peak-focus window.",
-    },
-    # -------------------------------------------------------------------------
-    # Q5 - Sources of disengagement / study blockers. MULTI-SELECT.
-    # research_ref: task aversiveness & procrastination (Steel 2007); cognitive
-    # overload (Sweller); self-efficacy (Bandura 1997).
-    # rationale: the downstream agent can pre-empt the user's specific blockers
-    # (e.g. smaller steps for overload, quick wins for low self-efficacy).
-    # -------------------------------------------------------------------------
-    {
-        "id": "q5_blockers",
-        "axis": "blockers",
-        "research_ref": "Steel 2007 (procrastination); Sweller; Bandura 1997 (self-efficacy)",
-        "question": (
-            "What most often gets in the way of your studying? "
+            "What kind of study material do you want to receive most? "
             "(Select all that apply.)"
         ),
         "options": [
-            {"label": "I put it off / struggle to get started.",
-             "value": "procrastination"},
-            {"label": "It feels like too much at once / overwhelming.",
-             "value": "overload"},
-            {"label": "I get distracted (phone, noise, environment).",
-             "value": "distraction"},
-            {"label": "I doubt I can do it / lose confidence.",
-             "value": "low_self_efficacy"},
-        ],
-        "multi_select": True,
-        "allow_other": True,
-        "rationale": "Lets generated material pre-empt the user's specific "
-                     "blockers (smaller steps, quick wins, focus cues).",
-    },
-    # -------------------------------------------------------------------------
-    # Q6 - Preferred output formats. MULTI-SELECT.
-    # research_ref: dual coding (Paivio) and worked examples (Sweller & Cooper
-    # 1985) as effective study formats. NOTE: this is about *material format*,
-    # NOT the debunked "learning styles" claim that people have a fixed modality.
-    # rationale: directly tells the downstream agent which artifacts to generate.
-    # -------------------------------------------------------------------------
-    {
-        "id": "q6_output_formats",
-        "axis": "preferred_output_formats",
-        "research_ref": "Paivio (dual coding); Sweller & Cooper 1985 (worked examples)",
-        "question": (
-            "Which study materials help you the most? (Select all that apply.)"
-        ),
-        "options": [
-            {"label": "Flashcards (question/answer pairs).", "value": "flashcards"},
-            {"label": "Summaries and condensed notes.", "value": "summaries"},
-            {"label": "Practice quizzes and tests.", "value": "quizzes"},
-            {"label": "Worked examples (step-by-step solved problems).",
+            {"label": "A synthesis sheet (the course condensed into structured sections).",
+             "value": "synthesis_sheet"},
+            {"label": "Flashcards (question / answer pairs).",
+             "value": "flashcards"},
+            {"label": "A quiz with corrections and explanations.",
+             "value": "quiz"},
+            {"label": "A mind map (concepts and their links).",
+             "value": "mindmap"},
+            {"label": "Worked examples (fully solved problems, step by step).",
              "value": "worked_examples"},
         ],
         "multi_select": True,
         "allow_other": True,
-        "rationale": "Directly selects which artifacts the downstream agent "
-                     "produces for this user.",
+        "rationale": "Directly selects which artifact(s) the downstream agent "
+                     "produces as the primary output.",
     },
     # -------------------------------------------------------------------------
-    # Q7 - Elaboration / self-explanation depth ("why" vs. facts).
-    # research_ref: Chi et al. (1994), self-explanation effect: explaining *why*
-    # and connecting ideas produces deeper understanding than memorizing facts.
-    # rationale: tells the agent whether to include causal/"why" explanations and
-    # connections, or to stay closer to concise factual statements.
+    # Q2 - Content density.
+    # OUTPUT DECISION: how long/aired-out the produced material is.
     # -------------------------------------------------------------------------
     {
-        "id": "q7_elaboration",
-        "axis": "elaboration_preference",
-        "research_ref": "Chi et al. 1994 (self-explanation / elaboration)",
-        "question": "When you learn something new, what helps it stick best?",
+        "id": "q2_density",
+        "axis": "density",
+        "question": "Do you prefer material that is dense, or spacious?",
         "options": [
-            {"label": "Understanding WHY it works and how it connects to other ideas.",
-             "value": "deep_why"},
-            {"label": "Having the key facts stated clearly and concisely.",
-             "value": "surface_facts"},
-            {"label": "A mix of both.", "value": "mixed"},
+            {"label": "Dense and concise — get to the point.",
+             "value": "dense"},
+            {"label": "Balanced — some structure, some breathing room.",
+             "value": "balanced"},
+            {"label": "Spacious — more breathing room, more examples, easier to skim.",
+             "value": "spacious"},
         ],
         "multi_select": False,
         "allow_other": True,
-        "rationale": "Controls whether generated material includes causal 'why' "
-                     "explanations and cross-links or stays concise and factual.",
+        "rationale": "Sets the length and pacing of the generated material.",
     },
     # -------------------------------------------------------------------------
-    # Q8 - Preferred depth / level of detail.
-    # research_ref: Sweller (cognitive load theory): the right amount of detail
-    # avoids both under-explaining and overloading working memory.
-    # rationale: sets the default verbosity/detail of generated material.
+    # Q3 - How each concept should be explained.
+    # OUTPUT DECISION: the shape of every concept explanation.
     # -------------------------------------------------------------------------
     {
-        "id": "q8_depth",
-        "axis": "depth_preference",
-        "research_ref": "Sweller (cognitive load / level of detail)",
-        "question": "How much detail do you usually want when studying a topic?",
+        "id": "q3_explanation_style",
+        "axis": "explanation_style",
+        "question": "When a concept is explained, what helps you most?",
         "options": [
-            {"label": "A high-level overview of the essentials.", "value": "overview"},
-            {"label": "A balanced, standard level of detail.", "value": "standard"},
-            {"label": "In-depth coverage, including nuances and edge cases.",
-             "value": "in_depth"},
+            {"label": "The definition on its own, stated clearly.",
+             "value": "definition_only"},
+            {"label": "The definition plus a concrete example.",
+             "value": "definition_plus_example"},
+            {"label": "The definition plus an analogy with something familiar.",
+             "value": "definition_plus_analogy"},
+            {"label": "A step-by-step logical derivation.",
+             "value": "step_by_step"},
         ],
         "multi_select": False,
         "allow_other": True,
-        "rationale": "Sets the default level of detail / verbosity of generated "
-                     "material.",
+        "rationale": "Determines how each concept explanation is structured in "
+                     "the generated material.",
+    },
+    # -------------------------------------------------------------------------
+    # Q4 - What tends to lose the learner in a course. MULTI-SELECT.
+    # OUTPUT DECISION: which flaw the material actively compensates for.
+    # -------------------------------------------------------------------------
+    {
+        "id": "q4_struggle",
+        "axis": "struggle",
+        "question": (
+            "What tends to lose you in a course? (Select all that apply.)"
+        ),
+        "options": [
+            {"label": "It feels too abstract — I can't picture it.",
+             "value": "too_abstract"},
+            {"label": "It feels too dense — too much text at once.",
+             "value": "too_dense"},
+            {"label": "It's hard to remember — I forget quickly.",
+             "value": "hard_to_remember"},
+            {"label": "It's hard to apply — I understand it but can't use it.",
+             "value": "hard_to_apply"},
+            {"label": "It's boring — I lose motivation.",
+             "value": "boring"},
+        ],
+        "multi_select": True,
+        "allow_other": True,
+        "rationale": "Tells the agent which specific weakness to compensate for "
+                     "(more examples, denser summarization, mnemonics, exercises, "
+                     "hooks).",
+    },
+    # -------------------------------------------------------------------------
+    # Q5 - What the learner is preparing for.
+    # OUTPUT DECISION: shape of assessment items produced (MCQ vs essay vs oral).
+    # -------------------------------------------------------------------------
+    {
+        "id": "q5_study_goal",
+        "axis": "study_goal",
+        "question": "What are you mainly preparing for?",
+        "options": [
+            {"label": "A multiple-choice / short-answer exam.",
+             "value": "mcq_exam"},
+            {"label": "A written exam (essays, problem sets).",
+             "value": "essay_exam"},
+            {"label": "An oral exam / presentation.",
+             "value": "oral_exam"},
+            {"label": "Practical application (project, code, real task).",
+             "value": "practical_application"},
+            {"label": "Personal understanding — no specific exam.",
+             "value": "personal_understanding"},
+        ],
+        "multi_select": False,
+        "allow_other": True,
+        "rationale": "Shapes assessment items: MCQ vs open questions vs speaking "
+                     "prompts vs practical exercises.",
+    },
+    # -------------------------------------------------------------------------
+    # Q6 - Balance between reading and self-testing in the material.
+    # OUTPUT DECISION: proportion of content vs check questions.
+    # -------------------------------------------------------------------------
+    {
+        "id": "q6_self_testing",
+        "axis": "self_testing",
+        "question": "What do you want the material to be, mostly?",
+        "options": [
+            {"label": "Mostly to read — I don't want to be quizzed constantly.",
+             "value": "mainly_reading"},
+            {"label": "Reading with small check-questions along the way.",
+             "value": "reading_with_checks"},
+            {"label": "Mostly self-tests — I want to be quizzed as I go.",
+             "value": "mainly_testing"},
+        ],
+        "multi_select": False,
+        "allow_other": True,
+        "rationale": "Sets the proportion of prose vs. self-check questions in "
+                     "the material.",
+    },
+    # -------------------------------------------------------------------------
+    # Q7 - Preferred tone / register of the material.
+    # OUTPUT DECISION: the voice / register of the generated text.
+    # -------------------------------------------------------------------------
+    {
+        "id": "q7_tone",
+        "axis": "tone",
+        "question": "How do you want the material to sound?",
+        "options": [
+            {"label": "Like a textbook — formal and academic.",
+             "value": "textbook"},
+            {"label": "Like a teacher explaining out loud — clear and pedagogical.",
+             "value": "teacher_voice"},
+            {"label": "Like a friend explaining — friendly and vulgarized.",
+             "value": "friend_explaining"},
+            {"label": "Like raw notes — a dense cheat-sheet, no fluff.",
+             "value": "raw_notes"},
+        ],
+        "multi_select": False,
+        "allow_other": True,
+        "rationale": "Sets the register / voice of the generated text.",
+    },
+    # -------------------------------------------------------------------------
+    # Q8 - Preferred visual layout of the text.
+    # OUTPUT DECISION: the visual structure of the generated document.
+    # -------------------------------------------------------------------------
+    {
+        "id": "q8_visual_layout",
+        "axis": "visual_layout",
+        "question": "How do you like text to be laid out?",
+        "options": [
+            {"label": "Structured paragraphs.",
+             "value": "structured_paragraphs"},
+            {"label": "Bullet lists as much as possible.",
+             "value": "bullet_lists"},
+            {"label": "Tables when things are comparative.",
+             "value": "tables_when_comparative"},
+            {"label": "A mix, with ASCII diagrams when useful.",
+             "value": "mixed_with_diagrams"},
+        ],
+        "multi_select": False,
+        "allow_other": True,
+        "rationale": "Determines the visual structure of the generated document "
+                     "(prose vs bullets vs tables vs diagrams).",
     },
 ]
 
