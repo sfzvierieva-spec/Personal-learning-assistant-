@@ -28,7 +28,7 @@ from pydantic import ValidationError
 
 from .chunking import chunk_text, estimate_tokens
 from .formats import FORMATS, resolve_format
-from .llm_client import LLMError, LLMFunction, call_claude, model_name
+from .llm_client import LLMError, LLMFunction, call_llm, model_name
 
 # A course under this size is sent in one piece. Above it, map -> reduce.
 # Kept well below the model's context window: long inputs cost more and the
@@ -230,7 +230,7 @@ def generate_content(
     except ValueError as exc:
         raise GenerationError(str(exc)) from exc
 
-    call = llm or call_claude
+    call = llm or call_llm
     warnings: list[str] = []
     ctx = _normalize_context(user_context, fmt, warnings)
 
