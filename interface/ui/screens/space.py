@@ -63,6 +63,7 @@ def _materials(sid, s):
                 s["errors"][fmt] = err
             backend.record("generation", {"session": s["name"], "format": fmt, "ok": data is not None,
                                           "error": err, "meta": meta})
+        st.session_state[f"just_generated_{sid}"] = True
         st.rerun()
 
 
@@ -96,6 +97,8 @@ def render():
         return
     sid = st.session_state.active
     st.title(s["name"])
+    if st.session_state.pop(f"just_generated_{sid}", False):
+        st.success("Your study content is ready — open the **Study content** tab below to see it.", icon="✅")
     t1, t2 = st.tabs(["Materials", "Study content"])
     with t1:
         _materials(sid, s)
