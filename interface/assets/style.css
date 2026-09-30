@@ -1,6 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400&display=swap');
 :root { --moss:#4B6455; --ochre:#B9862F; --rule:rgba(128,134,128,.35); }
-html, body, [class*="st-"] { font-family:'IBM Plex Sans',sans-serif; }
+html, body { font-family:'IBM Plex Sans',sans-serif; }
+/* NOTE: don't blanket [class*="st-"] with a font-family override — it also matches
+   Streamlit's own icon spans (the expander chevron, file-uploader icon, etc.), which rely on
+   a ligature icon font. Overriding it there breaks the icon and shows raw text like
+   "keyboard_arrow_right" instead of the glyph. Plain inheritance from body is enough. */
 .block-container { padding-top:2.2rem; max-width:1100px; }
 h1,h2,h3,.fn-display { font-family:'Fraunces',Georgia,serif !important; font-weight:500 !important; letter-spacing:-.01em; }
 .fn-brand { font-family:'Fraunces',serif; font-size:1.25rem; margin-bottom:2.5rem; }
