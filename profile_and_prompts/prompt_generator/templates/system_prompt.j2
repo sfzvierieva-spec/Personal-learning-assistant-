@@ -1,0 +1,32 @@
+{# Jinja2 template for the generated system prompt (v4 style).
+
+   Rendered by prompt_generator/generator.py. Uses XML-style tags so the
+   downstream agent (and any parser) can reliably locate each section.
+   trim_blocks/lstrip_blocks are enabled in the environment for clean output. #}
+<role>
+{{ role }}
+</role>
+
+<user_profile>
+{{ user_profile }}
+</user_profile>
+
+<output_style>
+{% for directive in output_style %}
+- {{ directive }}
+{% endfor %}
+</output_style>
+
+<forbidden>
+{% for rule in forbidden %}
+- {{ rule }}
+{% endfor %}
+</forbidden>
+{% if examples %}
+
+<examples>
+{% for example in examples %}
+{{ example }}
+{% endfor %}
+</examples>
+{% endif %}

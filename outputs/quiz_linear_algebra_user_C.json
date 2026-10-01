@@ -1,0 +1,80 @@
+{
+  "format": "quiz",
+  "title": "Linear Algebra II",
+  "language": "en",
+  "content": {
+    "questions": [
+      {
+        "question": "According to Exercise 1, how is the signature of a permutation σ, denoted by ε(σ), defined when σ is decomposed as a product of p transpositions?",
+        "choices": [
+          "ε(σ) = (-1)^p",
+          "ε(σ) = p!",
+          "ε(σ) = (-1)^(p+1)",
+          "ε(σ) = 1/p"
+        ],
+        "answer_index": 0,
+        "explanation": "Exercise 1 defines the signature of σ as the integer ε(σ) = (-1)^p, where p is the number of transpositions appearing in a decomposition of σ as a product of transpositions.",
+        "source_hint": "Page 3"
+      },
+      {
+        "question": "In Exercise 27, what condition must a matrix M = (M_ij) in M_n([0, 1]) satisfy to be called a stochastic matrix?",
+        "choices": [
+          "The sum of entries in each column equals 1",
+          "For all i in [[1, n]], the sum over j from 1 to n of M_ij equals 1",
+          "det(M) = 1",
+          "All diagonal entries M_ii must be equal to 1"
+        ],
+        "answer_index": 1,
+        "explanation": "Exercise 27 defines a stochastic matrix M as having entries in [0, 1] such that for all i in [[1, n]], the sum over j from 1 to n of M_ij equals 1.",
+        "source_hint": "Page 11"
+      },
+      {
+        "question": "According to Exercise 30, which condition is equivalent to a matrix M in M_n(R) not being invertible?",
+        "choices": [
+          "Tr(M) = 0",
+          "Sp(M) is empty",
+          "0 is an element of Sp(M)",
+          "1 is an element of Sp(M)"
+        ],
+        "answer_index": 2,
+        "explanation": "Exercise 30 states the equivalence: 0 ∈ Sp(M) <=> M is not invertible.",
+        "source_hint": "Page 12"
+      },
+      {
+        "question": "In Exercise 33, what defining equation characterizes P in M_n(R) as a projection matrix?",
+        "choices": [
+          "P^2 = P",
+          "P^T = P",
+          "P^2 = I_n",
+          "det(P) = 1"
+        ],
+        "answer_index": 0,
+        "explanation": "Exercise 33 states: 'Let P ∈ M_n(R) such that P^2 = P. We say that P is a projection matrix...'",
+        "source_hint": "Page 13"
+      },
+      {
+        "question": "According to Exercise 34, what is the definition of a nilpotent matrix M in M_n(R)?",
+        "choices": [
+          "det(M) = -1",
+          "There exists p in N* such that M^p = 0",
+          "M is symmetric and Tr(M) = 0",
+          "M^2 = M"
+        ],
+        "answer_index": 1,
+        "explanation": "Exercise 34 defines M as a nilpotent matrix if there exists p ∈ N* such that M^p = 0.",
+        "source_hint": "Page 13"
+      }
+    ]
+  },
+  "meta": {
+    "strategy": "single_pass",
+    "chunks": 1,
+    "input_tokens_estimate": 4892,
+    "model": "gemini-flash-latest",
+    "retried": false,
+    "user_context": {
+      "num_items": 5
+    },
+    "warnings": []
+  }
+}
