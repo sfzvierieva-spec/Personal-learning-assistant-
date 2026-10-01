@@ -1,0 +1,45 @@
+{
+  "format": "flashcards",
+  "title": "Linear Algebra II",
+  "language": "fr",
+  "content": {
+    "cards": [
+      {
+        "front": "What is the cardinality of the symmetric group $S_n$ for $n \\in \\mathbb{N}^*$?",
+        "back": "$Card(S_n) = n!$",
+        "source_hint": "Page 3"
+      },
+      {
+        "front": "What is the signature $\\varepsilon(\\sigma)$ of a $p$-cycle $\\sigma$?",
+        "back": "$\\varepsilon(\\sigma) = (-1)^p$",
+        "source_hint": "Page 3"
+      },
+      {
+        "front": "What are the exam dates scheduled for February 2026 in MA T21-1 Linear Algebra II?",
+        "back": "February 9, 2026 (MCQ, duration 30 minutes, scope: Exercises 1–17)",
+        "source_hint": "Page 2"
+      },
+      {
+        "front": "What does an exam scope of \"Exercises 1–17\" exclude?",
+        "back": "Section 4 and questions/exercises marked with the symbol «(⋆)», which are intended for the Advanced Mathematics track.",
+        "source_hint": "Page 2"
+      },
+      {
+        "front": "How is the Fibonacci sequence defined for $n \\in \\mathbb{N}$?",
+        "back": "$F_0 = 0$, $F_1 = 1$, and $F_{n+2} = F_{n+1} + F_n$",
+        "source_hint": "Page 5"
+      }
+    ]
+  },
+  "meta": {
+    "strategy": "single_pass",
+    "chunks": 1,
+    "input_tokens_estimate": 3050,
+    "model": "gemini-flash-lite-latest",
+    "retried": false,
+    "user_context": {
+      "num_items": 5
+    },
+    "warnings": []
+  }
+}

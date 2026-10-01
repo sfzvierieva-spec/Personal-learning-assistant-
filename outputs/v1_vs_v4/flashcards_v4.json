@@ -1,0 +1,60 @@
+{
+  "format": "flashcards",
+  "title": "Linear Algebra II",
+  "language": "en",
+  "content": {
+    "cards": [
+      {
+        "front": "What is a transposition in the symmetric group S_n?",
+        "back": "A transposition is a 2-cycle, which swaps two elements and leaves all other elements of [[1, n]] fixed.",
+        "source_hint": "Page 3"
+      },
+      {
+        "front": "What is the spectral characterization of matrix invertibility?",
+        "back": "A matrix M in M_n(R) is not invertible if and only if 0 is an eigenvalue of M (0 in Sp(M)). Why: having 0 as an eigenvalue implies a non-trivial kernel.",
+        "source_hint": "Page 12"
+      },
+      {
+        "front": "What condition defines a stochastic matrix M in M_n([0, 1])?",
+        "back": "The sum of the entries along each row must equal 1 (for all i in [[1, n]], the sum over j of M_ij equals 1).",
+        "source_hint": "Page 11"
+      },
+      {
+        "front": "What is a projection matrix P in M_n(R)?",
+        "back": "A matrix satisfying P^2 = P. It projects every vector of R^n onto Im(P) along ker(P).",
+        "source_hint": "Page 13"
+      },
+      {
+        "front": "When are two matrices A and B in M_n(R) said to be similar?",
+        "back": "When there exists an invertible matrix P in GL_n(R) such that A = P B P^(-1). Connection: similar matrices share the same determinant, trace, spectrum, and rank.",
+        "source_hint": "Page 12"
+      },
+      {
+        "front": "What defines a nilpotent matrix and its index of nilpotency?",
+        "back": "A matrix M is nilpotent if there exists p >= 1 such that M^p = 0. The smallest such integer p is its index of nilpotency.",
+        "source_hint": "Page 13"
+      },
+      {
+        "front": "What is the minimal polynomial mu_A of a matrix A?",
+        "back": "It is the monic polynomial annihilating A (meaning mu_A(A) = 0) that has the smallest possible degree. Connection: its roots are exactly the eigenvalues of A.",
+        "source_hint": "Page 15"
+      },
+      {
+        "front": "If M in M_n(R) is diagonalizable, how are det(M) and Tr(M) expressed via its eigenvalues?",
+        "back": "det(M) is the product of all eigenvalues and Tr(M) is the sum of all eigenvalues (counted with multiplicity). Why: similarity preserves both determinant and trace from the diagonal form.",
+        "source_hint": "Page 12"
+      }
+    ]
+  },
+  "meta": {
+    "strategy": "single_pass",
+    "chunks": 1,
+    "input_tokens_estimate": 4892,
+    "model": "gemini-flash-latest",
+    "retried": false,
+    "user_context": {
+      "num_items": 8
+    },
+    "warnings": []
+  }
+}

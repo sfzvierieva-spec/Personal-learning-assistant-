@@ -1,0 +1,37 @@
+{
+  "format": "flashcards",
+  "title": "Linear Algebra",
+  "language": "en",
+  "content": {
+    "cards": [
+      {
+        "front": "When is a matrix A considered invertible?",
+        "back": "A matrix A is invertible if and only if its determinant is not zero.",
+        "source_hint": "Page 1"
+      },
+      {
+        "front": "What condition regarding the determinant must be met for a matrix A to have an inverse?",
+        "back": "det(A) != 0",
+        "source_hint": "Page 1"
+      },
+      {
+        "front": "How do you calculate the determinant of a 2x2 matrix [[a, b], [c, d]]?",
+        "back": "det(A) = ad - bc",
+        "source_hint": "Page 1"
+      }
+    ]
+  },
+  "meta": {
+    "strategy": "single_pass",
+    "chunks": 1,
+    "input_tokens_estimate": 31,
+    "model": "gemini-flash-lite-latest",
+    "retried": false,
+    "user_context": {
+      "num_items": 15
+    },
+    "warnings": [
+      "3 items produced instead of the 15 requested."
+    ]
+  }
+}

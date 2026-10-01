@@ -1,0 +1,60 @@
+{
+  "format": "flashcards",
+  "title": "Linear Algebra II",
+  "language": "en",
+  "content": {
+    "cards": [
+      {
+        "front": "What is a transposition in the symmetric group Sn?",
+        "back": "A transposition is a 2-cycle.",
+        "source_hint": "Page 3"
+      },
+      {
+        "front": "What is the spectral characterization of a non-invertible matrix M?",
+        "back": "M is not invertible if and only if 0 belongs to its spectrum (0 ∈ Sp(M)).",
+        "source_hint": "Page 12"
+      },
+      {
+        "front": "When are two square matrices A and B said to be similar?",
+        "back": "They are similar if there exists an invertible matrix P such that A = PBP⁻¹.",
+        "source_hint": "Page 12"
+      },
+      {
+        "front": "What inequality relates the geometric multiplicity dim(Eλ) and the algebraic multiplicity mλ of an eigenvalue λ?",
+        "back": "1 ≤ dim(Eλ) ≤ mλ",
+        "source_hint": "Page 13"
+      },
+      {
+        "front": "What is a projection matrix P in Mn(R)?",
+        "back": "A matrix P such that P² = P.",
+        "source_hint": "Page 13"
+      },
+      {
+        "front": "What is a nilpotent matrix?",
+        "back": "A matrix M for which there exists an integer p ≥ 1 such that Mᵖ = 0.",
+        "source_hint": "Page 13"
+      },
+      {
+        "front": "What defines a stochastic matrix M ∈ Mn([0,1])?",
+        "back": "The sum of the entries in each of its rows equals 1.",
+        "source_hint": "Page 11"
+      },
+      {
+        "front": "What is the minimal polynomial μA of a matrix A?",
+        "back": "The monic annihilating polynomial of A with the smallest possible degree.",
+        "source_hint": "Page 15"
+      }
+    ]
+  },
+  "meta": {
+    "strategy": "single_pass",
+    "chunks": 1,
+    "input_tokens_estimate": 4892,
+    "model": "gemini-flash-latest",
+    "retried": false,
+    "user_context": {
+      "num_items": 8
+    },
+    "warnings": []
+  }
+}
