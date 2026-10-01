@@ -50,10 +50,10 @@ grading explicitly checks this (25% Git).
 
 ## Tools
 
-**Languages:** Python 3.13+, SQL (SQLite).
+**Languages:** Python 3.10+, SQL (SQLite).
 
 **Libraries:** pydantic 2 (profile validation), jinja2 (prompt templating),
-Streamlit (interface), pytest (tests), ReportLab (PDF export).
+Streamlit (interface), pytest (tests), fpdf2 (PDF export).
 
 **LLM providers:** Google Gemini (free tier, the one we use) or Anthropic
 Claude, selected with `LLM_PROVIDER` in the `.env` file.
@@ -101,7 +101,6 @@ The app opens at `http://localhost:8501`.
 Personal-learning-assistant-/
 ├── README.md
 ├── requirements.txt
-├── create_database.py                  # Hugo — SQLite schema
 │
 ├── profile_and_prompts/                # Léna — Pole 1
 │   ├── questionnaire/questions.py      # the 8 questions
@@ -126,6 +125,13 @@ Personal-learning-assistant-/
 │   ├── app.py                          # Streamlit entry point
 │   ├── ui/{screens,components,...}     # UI building blocks
 │   └── tests/
+│
+├── evaluation_db/                      # Hugo — Pole 4
+│   ├── schema.sql                      # the 4 tables (profiles, courses,
+│   │                                   #   generations, feedbacks)
+│   ├── create_database.py              # runs schema.sql into learning_platform.db
+│   ├── README.md                       # how to run and inspect the DB
+│   └── DATABASE.md                     # schema documentation
 │
 └── outputs/                            # Real sample outputs (users A and C
                                         # on a 12-page linear-algebra course)
@@ -212,8 +218,8 @@ Works today:
 - A Streamlit UI covering the full user flow (landing, questionnaire,
   profile validation, upload, format selection, results, exports to
   Markdown / PDF / JSON / Anki CSV).
-- A SQLite schema for profiles, courses, generations and feedbacks (schema
-  being aligned to the real pydantic Profile).
+- A SQLite schema storing the Profile as JSON, plus courses, generations
+  and feedbacks tables.
 
 What is in progress:
 
