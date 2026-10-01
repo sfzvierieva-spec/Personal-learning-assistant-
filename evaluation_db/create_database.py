@@ -9,106 +9,33 @@
 # - AI generations
 # - User feedback
 #
-# The database is composed of four main tables:
-# profiles, courses, generations and feedbacks.
+# The table definitions live in schema.sql (next to
+# this file) so they can be read and reviewed on
+# their own. This script just executes them.
 #
-# Relationships are managed using foreign keys.
-# This allows us to connect users, learning
-# resources, generated content and feedback.
+# Run from anywhere:
+#     python evaluation_db/create_database.py
 #
 # ===============================================
 
 import sqlite3
+from pathlib import Path
 
-# Create (or open) the SQLite database
-conn = sqlite3.connect("learning_platform.db")
+DB_DIR = Path(__file__).resolve().parent
+SCHEMA_PATH = DB_DIR / "schema.sql"
+DB_PATH = DB_DIR / "learning_platform.db"
 
-# Create a cursor to execute SQL commands
-cursor = conn.cursor()
 
-# ===============================================
-# Profiles Table
-# Stores user information and learning preferences
-# ===============================================
-cursor.execute("""
-CREATE TABLE IF NOT EXISTS profiles (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    username TEXT NOT NULL,
-    email TEXT UNIQUE NOT NULL,
-    learning_style TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-)
-""")
+def create_database(db_path=DB_PATH):
+    """Create (or open) the SQLite database and apply schema.sql."""
+    conn = sqlite3.connect(db_path)
+    try:
+        conn.executescript(SCHEMA_PATH.read_text(encoding="utf-8"))
+        conn.commit()
+    finally:
+        conn.close()
 
-# ===============================================
-# Courses Table
-# Stores uploaded courses and course information
-# ===============================================
-cursor.execute("""
-CREATE TABLE IF NOT EXISTS courses (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    profile_id INTEGER,
-    course_name TEXT NOT NULL,
-    file_path TEXT,
-    upload_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (profile_id) REFERENCES profiles(id)
-)
-""")
 
-# ===============================================
-# Generations Table
-# Stores AI generated learning content
-# ===============================================
-cursor.execute("""
-CREATE TABLE IF NOT EXISTS generations (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    profile_id INTEGER,
-    course_id INTEGER,
-    prompt TEXT,
-    generated_content TEXT,
-    generation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (profile_id) REFERENCES profiles(id),
-    FOREIGN KEY (course_id) REFERENCES courses(id)
-)
-""")
-
-# ===============================================
-# Feedbacks Table
-# Stores user ratings and comments on AI outputs
-# ===============================================
-cursor.execute("""
-CREATE TABLE IF NOT EXISTS feedbacks (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    profile_id INTEGER,
-    generation_id INTEGER,
-    rating INTEGER,
-    comment TEXT,
-    feedback_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (profile_id) REFERENCES profiles(id),
-    FOREIGN KEY (generation_id) REFERENCES generations(id)
-)
-""")
-
-# Save all changes
-conn.commit()
-
-# Close the database
-conn.close()
-
-# Confirmation message
-print("Database successfully created.")
-
-# ===============================================
-# Final Result
-#
-# The database now contains:
-# - profiles
-# - courses
-# - generations
-# - feedbacks
-#
-# It can store all information required for the
-# personalized learning platform and supports
-# future expansion if additional features are
-# implemented.
-# ===============================================
+if __name__ == "__main__":
+    create_database()
+    print(f"Database successfully created: {DB_PATH}")
