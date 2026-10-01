@@ -25,9 +25,13 @@ def render():
             st.markdown(f"<div class='fn-agent'>YOUR AGENT IS ASKING</div><div class='fn-q'>{q['text']}</div>",
                         unsafe_allow_html=True)
             with st.container(key="options"):
+                # Each option is {"label": shown, "value": stored}. The label is
+                # the human-readable text; the value is what we send to build_profile.
+                # Multi-select questions (q.get("multi_select")) are not yet handled
+                # by this single-click flow — see TODO at bottom of file.
                 for opt in q["options"]:
-                    if st.button(opt, key=f"q{i}_{opt}", use_container_width=True):
-                        st.session_state.answers[q["id"]] = opt
+                    if st.button(opt["label"], key=f"q{i}_{opt['value']}", use_container_width=True):
+                        st.session_state.answers[q["id"]] = opt["value"]
                         st.session_state.q_index += 1
                         if st.session_state.q_index >= len(qs):
                             _finish(st.session_state.answers)

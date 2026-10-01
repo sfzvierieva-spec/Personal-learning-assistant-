@@ -56,11 +56,25 @@ _raw_questions = _resolve("profile_and_prompts.questionnaire.questions", "QUESTI
 
 
 def _normalize_questions(raw):
-    """Turn Lena's question objects into [{"id","text","options"}]. Returns None if unrecognised."""
+    """Turn Lena's question objects into [{"id","text","options","multi_select"}].
+
+    Lena's real shape (now on main):
+      {"id": str, "axis": str, "question": str,
+       "options": [{"label": str, "value": str}, ...],
+       "multi_select": bool, "allow_other": True, ...}
+
+    We keep the option dicts intact so screens can show `opt["label"]` to the
+    user and store `opt["value"]` as the answer that `build_profile` expects.
+    Returns None if the shape doesn't match.
+    """
     try:
-        return [{"id": q["id"], "text": q["text"], "options": list(q["options"])} for q in raw]
+        return [{"id": q["id"],
+                 "text": q["question"],
+                 "options": [{"label": o["label"], "value": o["value"]} for o in q["options"]],
+                 "multi_select": q.get("multi_select", False)}
+                for q in raw]
     except (TypeError, KeyError):
-        return None  # TODO: adapt once questions.py's real structure is confirmed
+        return None
 
 
 _questions = _normalize_questions(_raw_questions) if _raw_questions else None
@@ -92,9 +106,18 @@ _PLACEHOLDER_QUESTIONS = [
 
 
 def get_questions():
+    """Return questions in the uniform shape used by screens.
+
+    Each option is always a {"label", "value"} dict so screens render the
+    label and store the value. In mock mode (no real Lena module), label and
+    value are the same string.
+    """
     if PROFILE_LIVE:
         return _questions
-    return [{"id": i, "text": t, "options": o} for i, t, o in _PLACEHOLDER_QUESTIONS]
+    return [{"id": i, "text": t,
+             "options": [{"label": o, "value": o} for o in opts],
+             "multi_select": False}
+            for i, t, opts in _PLACEHOLDER_QUESTIONS]
 
 
 def build_profile(answers):
