@@ -59,6 +59,8 @@ _FORMAT_LABELS = {
     "quiz": "a quiz with corrections",
     "mindmap": "a mind map",
     "worked_examples": "worked examples",
+    "revision_plan": "a revision plan",
+    "exam_questions": "likely exam questions",
 }
 _DENSITY_LABELS = {
     "dense": "dense and concise",

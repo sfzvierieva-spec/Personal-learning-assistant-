@@ -32,6 +32,8 @@ class MainFormat(str, Enum):
     QUIZ = "quiz"
     MINDMAP = "mindmap"
     WORKED_EXAMPLES = "worked_examples"
+    REVISION_PLAN = "revision_plan"
+    EXAM_QUESTIONS = "exam_questions"
 
 
 class Density(str, Enum):

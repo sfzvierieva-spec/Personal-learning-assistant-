@@ -120,6 +120,8 @@ _FORMAT_LABELS = {
     "quiz": "a quiz",
     "mindmap": "a mind map",
     "worked_examples": "worked examples",
+    "revision_plan": "a revision plan",
+    "exam_questions": "likely exam questions",
 }
 _STRUGGLE_LABELS = {
     "too_abstract": "things staying too abstract",
