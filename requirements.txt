@@ -1,0 +1,8 @@
+# Runtime dependencies for the profile_and_prompts module.
+# Install with: python3 -m pip install -r requirements.txt
+
+pydantic>=2.0          # profile schema validation
+jinja2>=3.1            # system-prompt template rendering
+
+# Dev-only (running the end-to-end tests):
+pytest>=8.0
