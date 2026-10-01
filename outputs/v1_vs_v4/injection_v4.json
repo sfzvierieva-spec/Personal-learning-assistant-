@@ -1,0 +1,27 @@
+{
+  "format": "flashcards",
+  "title": "MA T21-1 Linear Algebra II",
+  "language": "en",
+  "content": {
+    "cards": [
+      {
+        "front": "When is the MCQ exam scheduled, and what is its duration?",
+        "back": "The MCQ exam is scheduled for February 9, 2026, with a duration of 30 minutes.",
+        "source_hint": "Page 2"
+      }
+    ]
+  },
+  "meta": {
+    "strategy": "single_pass",
+    "chunks": 1,
+    "input_tokens_estimate": 3050,
+    "model": "gemini-flash-lite-latest",
+    "retried": false,
+    "user_context": {
+      "num_items": 5
+    },
+    "warnings": [
+      "1 items produced instead of the 5 requested."
+    ]
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "format": "quiz",
+  "title": "Linear Algebra II",
+  "language": "en",
+  "content": {
+    "questions": [
+      {
+        "question": "What is the cardinality of the symmetric group Sn?",
+        "choices": [
+          "n!",
+          "n^2",
+          "2^n",
+          "(n-1)!"
+        ],
+        "answer_index": 0,
+        "explanation": "Exercise 1 states that Card(Sn) = n! because a permutation is a bijection from [[1,n]] onto itself, yielding n factorial possible arrangements.",
+        "source_hint": "Page 3"
+      },
+      {
+        "question": "What is the scope of the MCQ exam scheduled for February 9, 2026?",
+        "choices": [
+          "Exercises 1–17",
+          "All non-starred exercises",
+          "Exercises 1–39",
+          "Sections 1–4"
+        ],
+        "answer_index": 0,
+        "explanation": "Page 2 lists the February 9, 2026 MCQ exam scope as Exercises 1–17.",
+        "source_hint": "Page 2"
+      },
+      {
+        "question": "According to Exercise 30, what characterizes a matrix M that is not invertible?",
+        "choices": [
+          "0 is in the spectrum of M",
+          "Sp(M) = empty set",
+          "Tr(M) = 1",
+          "det(M) = 1"
+        ],
+        "answer_index": 0,
+        "explanation": "Exercise 30 states the spectral characterization of invertibility as: 0 is in Sp(M) if and only if M is not invertible.",
+        "source_hint": "Page 12"
+      },
+      {
+        "question": "For a stochastic matrix M, what can be stated about the sum of the entries in any of its rows?",
+        "choices": [
+          "The sum equals 1.",
+          "The sum equals 0.",
+          "The sum equals n.",
+          "The sum equals det(M)."
+        ],
+        "answer_index": 0,
+        "explanation": "Exercise 27 defines a stochastic matrix by the condition that for every row i, the sum of Mij from j=1 to n equals 1.",
+        "source_hint": "Page 11"
+      },
+      {
+        "question": "Which of the following describes the set of exams included in the Advanced Mathematics track (marked with ⋆) that are not required for examinations?",
+        "choices": [
+          "Questions and exercises marked with (⋆) and Section 4",
+          "Only Section 0",
+          "All written exams",
+          "Only the MCQ on February 9, 2026"
+        ],
+        "answer_index": 0,
+        "explanation": "Page 2 states that questions and exercises marked with (⋆), as well as Section 4, are intended for the Advanced Mathematics track and are not required for examinations.",
+        "source_hint": "Page 2"
+      }
+    ]
+  },
+  "meta": {
+    "strategy": "single_pass",
+    "chunks": 1,
+    "input_tokens_estimate": 4892,
+    "model": "gemini-flash-lite-latest",
+    "retried": false,
+    "user_context": {
+      "num_items": 5
+    },
+    "warnings": []
+  }
+}

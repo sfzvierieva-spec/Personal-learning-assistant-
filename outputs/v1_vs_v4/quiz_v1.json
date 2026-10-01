@@ -1,0 +1,80 @@
+{
+  "format": "quiz",
+  "title": "Linear Algebra II",
+  "language": "en",
+  "content": {
+    "questions": [
+      {
+        "question": "What is the cardinality of the symmetric group Sn?",
+        "choices": [
+          "n!",
+          "n^2",
+          "2^n",
+          "n"
+        ],
+        "answer_index": 0,
+        "explanation": "The symmetric group Sn is the set of all bijections from [[1,n]] onto itself, and its cardinality is given by n!.",
+        "source_hint": "Page 3"
+      },
+      {
+        "question": "For a matrix M in Mn(R), what is the spectral characterization of invertibility?",
+        "choices": [
+          "0 is in Sp(M) if and only if M is not invertible",
+          "Sp(M) contains only 1",
+          "0 is not an eigenvalue if and only if M is not invertible",
+          "Sp(M) is always empty"
+        ],
+        "answer_index": 0,
+        "explanation": "A matrix M is not invertible if and only if 0 belongs to its spectrum Sp(M).",
+        "source_hint": "Page 12"
+      },
+      {
+        "question": "What is the relationship between the algebraic multiplicity (ml) and the geometric multiplicity (dim(El)) of an eigenvalue l of a matrix A?",
+        "choices": [
+          "1 <= dim(El) <= ml",
+          "dim(El) = ml always",
+          "dim(El) >= ml",
+          "dim(El) * ml = n"
+        ],
+        "answer_index": 0,
+        "explanation": "For any eigenvalue l of A, the dimension of its eigenspace is at least 1 and at most its algebraic multiplicity ml.",
+        "source_hint": "Page 13"
+      },
+      {
+        "question": "Which of the following describes a stochastic matrix M?",
+        "choices": [
+          "The sum of the entries in each row equals 1",
+          "All entries are strictly greater than 1",
+          "The determinant is always 0",
+          "It is always symmetric"
+        ],
+        "answer_index": 0,
+        "explanation": "A matrix M in Mn([0,1]) is a stochastic matrix if the sum of the entries in each row equals 1.",
+        "source_hint": "Page 11"
+      },
+      {
+        "question": "What can be said about the eigenvalues of a nilpotent matrix N?",
+        "choices": [
+          "Sp(N) = {0}",
+          "Sp(N) contains all real numbers",
+          "Sp(N) = {1}",
+          "Sp(N) is empty"
+        ],
+        "answer_index": 0,
+        "explanation": "If N is a nilpotent matrix, its spectrum contains only 0 (Sp(N) = {0}).",
+        "source_hint": "Page 13"
+      }
+    ]
+  },
+  "meta": {
+    "strategy": "single_pass",
+    "chunks": 1,
+    "input_tokens_estimate": 4892,
+    "model": "gemini-flash-lite-latest",
+    "retried": false,
+    "user_context": {
+      "num_items": 5
+    },
+    "warnings": []
+  }
+}
