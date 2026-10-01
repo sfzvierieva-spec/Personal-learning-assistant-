@@ -44,9 +44,9 @@ downstream code treat each section as a separate contract.
 is now treated as data to be read, not as more instructions mixed into
 the role.
 
-**Observed effect.** Output consistency improved immediately — the LLM
-started producing structurally identical outputs across runs for the same
-profile.
+**Observed effect.** Not measured separately: only v1 and v4 were run on
+real inputs (see `outputs/v1_vs_v4/`). The effect described above is the
+expected one.
 
 ---
 
@@ -68,10 +68,10 @@ sees what we want.
 **Expected effect.** More reliable Q/A format for flashcards and quizzes;
 fewer silent fabrications on edge cases where the source is thin.
 
-**Observed effect.** Fewer malformed flashcards. The refusal pattern on
-missing content works on simple cases but is still bypassed on subtle
-*"the author believes…"* questions where the model guesses — this is
-exactly the gap v4 closes.
+**Observed effect.** Not measured separately (no v3 run, see
+`outputs/v1_vs_v4/` for v1 vs v4). In the v1 vs v4 thin-source probe, both
+versions refused to invent: asked for 15 flashcards from a 2-sentence source,
+they produced only 3–4 grounded cards.
 
 ---
 
@@ -107,14 +107,25 @@ course for two deliberately contrasting profiles (users A and C from
 in `outputs/`:
 
 - The **summary** is clearly personalized. User A (dense, cheat-sheet
-  style, MCQ exam prep) receives a tight bullet-list with mnemonics;
+  style, MCQ exam prep) receives 30 short bullets (~135 characters each);
   user C (spacious, friend-explaining, personal understanding) receives
-  friendly prose with analogies. The two outputs are visibly different
-  on first glance.
+  10 long paragraphs of friendly prose with analogies (~620 characters
+  each). The two outputs are visibly different on first glance.
 - The **quiz** is almost identical for the two profiles. The quiz shape
   does not respond to the profile the way the summary does.
 
 This asymmetry is the known gap v5 will target.
+
+**v1 vs v4 on the same inputs** (real runs, `outputs/v1_vs_v4/`, PR #7):
+
+- v4 answers are richer: flashcard answers 2.6× longer, with "Why:" lines.
+- But one v4 "why" goes beyond the course (*"implies a non-trivial
+  kernel"*, not on page 12): "explain why" conflicts with "use only the
+  source". v5 should say "explain why using only what the course says".
+- v1 made a factual error (*"signature of a p-cycle = (−1)^p"*) by mixing up
+  two uses of the letter p in the course.
+- Prompt injection hidden in the course was ignored by both, but v4 then
+  produced only 1 card out of 5.
 
 ---
 
