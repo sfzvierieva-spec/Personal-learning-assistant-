@@ -9,13 +9,16 @@ PRAGMA foreign_keys = ON;
 
 -- -----------------------------------------------
 -- Profiles
--- User information and learning preferences.
+-- Stores the learner Profile produced by
+-- profile_and_prompts/profile/schema.py, serialized
+-- as JSON (Profile.model_dump_json()). Keeping the
+-- whole object in one column means the table does
+-- not break when the Profile fields evolve. If we
+-- later need to filter on a field, we add a column.
 -- -----------------------------------------------
 CREATE TABLE IF NOT EXISTS profiles (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    username TEXT NOT NULL,
-    email TEXT UNIQUE NOT NULL,
-    learning_style TEXT,
+    profile_json TEXT NOT NULL CHECK (json_valid(profile_json)),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

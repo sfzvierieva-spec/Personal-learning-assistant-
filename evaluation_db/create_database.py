@@ -13,6 +13,9 @@
 # this file) so they can be read and reviewed on
 # their own. This script just executes them.
 #
+# The profiles table stores the whole Profile from
+# profile_and_prompts/profile/schema.py as JSON.
+#
 # Run from anywhere:
 #     python evaluation_db/create_database.py
 #
