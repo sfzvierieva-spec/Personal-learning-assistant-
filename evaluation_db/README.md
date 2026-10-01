@@ -10,6 +10,9 @@ Personalized Learning Platform.
 | `schema.sql` | The table definitions (single source of truth). |
 | `create_database.py` | Creates `learning_platform.db` by executing `schema.sql`. |
 | `DATABASE.md` | Full documentation: schema, tables, relationships, design choices. |
+| `PROMPT_EVALUATION.md` | Evaluation of the prompts v1 vs v4 and of the personalization (users A vs C), based on the real runs in `outputs/`. |
+
+The failure log of the project is in `docs/failure_log.md`.
 
 ## Usage
 
