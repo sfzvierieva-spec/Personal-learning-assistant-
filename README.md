@@ -19,7 +19,8 @@ The app runs in six steps:
    balance, tone, visual layout).
 2. **Profile validation** — a short *warm but neutral* summary of the detected
    profile is shown; the user validates or adjusts before continuing.
-3. **Course upload** — PDF, DOCX, TXT or MD (up to ~50 pages).
+3. **Course upload** — PDF, DOCX, TXT or MD (long courses are split
+   automatically, see *Context window* below).
 4. **Format selection** — flashcards, synthesis sheet, quiz, revision plan,
    likely exam questions, mind map or worked examples.
 5. **Generation** — the uploaded course is sent to the LLM through a system
@@ -54,8 +55,8 @@ grading explicitly checks this (25% Git).
 **Libraries:** pydantic 2 (profile validation), jinja2 (prompt templating),
 Streamlit (interface), pytest (tests), ReportLab (PDF export).
 
-**LLM providers:** Google Gemini (free tier, default) or Anthropic Claude as
-a fallback. The provider is configured via the `.env` file.
+**LLM providers:** Google Gemini (free tier, the one we use) or Anthropic
+Claude, selected with `LLM_PROVIDER` in the `.env` file.
 
 **Collaboration:** Git + GitHub, with feature branches per pole and PR
 reviews across poles.
@@ -74,21 +75,21 @@ cd Personal-learning-assistant-
 # 2. Install dependencies
 pip install -r requirements.txt
 pip install -r ingestion_generation/requirements.txt
-pip install -r interface/requirements.txt
+pip install -r interface/requirements.txt   # once PR #2 (interface) is merged
 
 # 3. Configure the LLM provider
 cat > .env <<EOF
 LLM_PROVIDER=gemini
 GEMINI_API_KEY=your_key_here
 EOF
-# Alternatively: LLM_PROVIDER=anthropic and ANTHROPIC_API_KEY=...
+# Alternatively: LLM_PROVIDER=claude and ANTHROPIC_API_KEY=...
 
 # 4. Run the tests
 python3 -m pytest profile_and_prompts/tests
 python3 -m pytest ingestion_generation/tests
-python3 -m pytest interface/tests
+python3 -m pytest interface/tests            # once PR #2 is merged
 
-# 5. Launch the app
+# 5. Launch the app (once PR #2 is merged)
 streamlit run interface/app.py
 ```
 
@@ -115,9 +116,9 @@ Personal-learning-assistant-/
 │
 ├── ingestion_generation/               # David — Pole 2
 │   ├── extraction.py                   # PDF / DOCX / TXT / MD -> text
-│   ├── chunking.py                     # map/reduce for long documents
+│   ├── chunking.py                     # splits long documents into chunks
 │   ├── llm_client.py                   # Gemini / Anthropic wrapper
-│   ├── generator.py                    # generate_content()
+│   ├── generator.py                    # generate_content(), map/reduce for long courses
 │   ├── formats.py                      # the 7 structured output schemas
 │   └── tests/
 │
@@ -157,8 +158,7 @@ Two very different uses:
 
 ## AI Failure Modes Addressed (grading criterion 12)
 
-We identified and reproduced four known LLM failure modes, and each is
-mitigated in the code:
+We address four known LLM failure modes, each mitigated in the code:
 
 | Failure mode | How we address it |
 |---|---|
@@ -226,7 +226,8 @@ What is in progress:
 
 - Persistent user accounts and multi-course history.
 - Memory of past sessions to apply spaced repetition over time.
-- Multilingual output (currently English only).
+- Letting the user choose the output language (today it follows the course
+  language).
 - More output formats (audio summary, animated mind map).
 - Sharing of generated materials between study partners.
 - Cloud deployment (currently local-only).
