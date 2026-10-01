@@ -14,6 +14,9 @@ The detailed comparison of the prompts is in
 | 3 | Mock drift between the profile module and the interface stub | Profile & Prompts / Interface | ✅ fixed |
 | 4 | v4 adds facts that are not in the course in its "why" lines | Prompts / Evaluation | 🔴 target of v5 |
 | 5 | Chaotic Git workflow at the start | Whole team | ✅ stabilized |
+| 6 | Claude API key rejected: no working LLM to test with | Ingestion & Generation | ✅ worked around |
+| 7 | Free-tier errors (503 / 429) during real runs | Ingestion & Generation | ✅ mitigated |
+| 8 | PDF extraction loses spaces in maths text | Ingestion & Generation | 🔴 open |
 
 ---
 
@@ -159,3 +162,76 @@ PR #6 (commit `16053b8`, "Move create_database.py into evaluation_db/").
 
 **Lesson.** Agree on the workflow on day one: branch per person, local
 commits, PR with a cross-pole review, merge.
+
+---
+
+## 6. Claude API key rejected: no working LLM to test with
+
+**What happened.** The generation module was first written for Claude
+(Anthropic). Every real call failed with an HTTP 400 error: our API key was
+not attached to a workspace, so the API refused it. Until then, the module
+had only been tested with a fake LLM.
+
+**Why it was a problem.** Without a working model there are no real outputs:
+no demo, no A vs C comparison, nothing to evaluate. And the only fix on the
+Claude side was a new paid key.
+
+**Fix.** Added Google Gemini, which has a free tier, as a second provider.
+All API code lives in `ingestion_generation/llm_client.py`, so the rest of
+the module did not change; `LLM_PROVIDER` in `.env` picks the provider.
+Claude stays supported, including the `ANTHROPIC_WORKSPACE_ID` setting that
+would have fixed the original error.
+
+**Evidence.** Commit `e09539a` "Support Gemini (free tier) as LLM provider,
+with retries on 429/503"; first real outputs in commit `29ce0ad`.
+
+**Lesson.** Keep the API behind one small function (`llm(system, messages)`).
+Switching provider then took one file, and the tests never needed a key.
+
+---
+
+## 7. Free-tier errors (503 / 429) during real runs
+
+**What happened.** The Gemini free tier often answered **503** ("model
+currently experiencing high demand") and, after many calls, **429** (limit
+reached). One A vs C summary run failed with a 503. In the first v1 vs v4
+run, **5 of the 8 generations failed** (four 503s, then one 429).
+
+**Why it was a problem.** Failed runs mean missing evidence, and a 503
+during the live demo would leave the screen empty.
+
+**Fix.**
+- `llm_client.py` retries 429 and 503 errors up to 3 times, waiting longer
+  each time (20 s, 40 s, 60 s), then shows a clear message.
+- The v1 vs v4 script can rerun only the failed experiments.
+- The 3 failed pairs were rerun on `gemini-flash-lite-latest`, which has
+  its own quota. To keep the comparison fair, both versions of a pair always
+  use the same model.
+
+**Evidence.** Commit `e09539a`; `outputs/v1_vs_v4/README.md` and the
+`model` field in `outputs/v1_vs_v4/summary.json`.
+
+**Lesson.** A free tier is fine for building but unreliable for timing:
+record a backup video of the demo. And mixing models weakens a comparison,
+so it must be stated as a limit.
+
+---
+
+## 8. PDF extraction loses spaces in maths text
+
+**What happened.** On the Linear Algebra PDF, `pypdf` merges some words with
+the maths around them: `LetM∈M n(R)` instead of "Let M ∈ M_n(R)".
+
+**Why it is a problem.** The model reads a damaged source. It still gave
+correct answers in our runs, but this kind of noise could contribute to
+misreadings such as v1's mix-up between the two meanings of `p` (see
+`PROMPT_EVALUATION.md`).
+
+**Status.** Open. Options: a layout-aware extractor (e.g. pdfplumber or
+PyMuPDF), or sending the PDF directly to a model that reads PDFs.
+
+**Evidence.** `extract_text()` on the course PDF (page 12, Exercise 30);
+`outputs/v1_vs_v4/README.md`, "Other limit seen".
+
+**Lesson.** Check what the model actually receives, not only what it
+returns.
