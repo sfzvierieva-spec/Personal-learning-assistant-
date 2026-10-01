@@ -1,11 +1,13 @@
-"""Exercises normalize()/validate() against David's real output_format contract
-(ingestion_generation/README.md), using lightweight stand-ins for `profile_and_prompts` and
-`ingestion_generation` in tests/fixtures/live_stub/, matching the function names and shapes
-documented in their PRs. Once those PRs are merged, point FIXTURES at the repo root instead
-(or delete this file) and re-run to check the real integration.
+"""Exercises normalize()/validate() against David's real output_format contract.
 
-Runs in a subprocess (not simple imports) so unsetting STUDY_AGENT_MOCK here can't leak
-into test_smoke.py, which relies on it being set at the pytest-process level.
+Uses local stubs under tests/fixtures/live_stub/ for both poles so the test
+does not need network access or LLM credentials. The stubs now mirror the
+REAL function names and data shapes merged into main (Lena's questions carry
+`question`/`axis`/`multi_select` + options as `{"label","value"}` dicts).
+
+Runs in a subprocess (not simple imports) so unsetting STUDY_AGENT_MOCK here
+can't leak into test_smoke.py, which relies on it being set at the
+pytest-process level.
 """
 import os
 import subprocess
