@@ -1,0 +1,80 @@
+{
+  "format": "quiz",
+  "title": "Linear Algebra II",
+  "language": "en",
+  "content": {
+    "questions": [
+      {
+        "question": "According to the course notes, how is the signature ε(σ) of a permutation σ ∈ S_n defined?",
+        "choices": [
+          "(-1)^n, where n is the degree of S_n",
+          "(-1)^p, where p is the number of transpositions in a decomposition of σ as a product of transpositions",
+          "(-1)^(p-1), where p is the number of cycles in the disjoint cycle decomposition of σ",
+          "The determinant of the permutation minus 1"
+        ],
+        "answer_index": 1,
+        "explanation": "The signature ε(σ) is explicitly defined as (-1)^p, where p is the number of transpositions appearing in a decomposition of σ as a product of transpositions.",
+        "source_hint": "Page 3"
+      },
+      {
+        "question": "What is Cassini's identity for the Fibonacci sequence (F_n) for all n ⩾ 1?",
+        "choices": [
+          "F_{n+1}F_{n-1} - F_n^2 = 0",
+          "F_{n+1}F_{n-1} - F_n^2 = (-1)^{n+1}",
+          "F_{n+1}F_{n-1} - F_n^2 = (-1)^n",
+          "F_{n+1}F_{n-1} - F_n^2 = 1"
+        ],
+        "answer_index": 2,
+        "explanation": "Cassini's identity is stated as: ∀n ⩾ 1, F_{n+1}F_{n-1} - F_n^2 = (-1)^n.",
+        "source_hint": "Page 5"
+      },
+      {
+        "question": "For any stochastic matrix M ∈ M_n([0,1]), which eigenvalue is guaranteed to belong to Sp(M)?",
+        "choices": [
+          "0",
+          "1",
+          "-1",
+          "n"
+        ],
+        "answer_index": 1,
+        "explanation": "For any stochastic matrix M, 1 ∈ Sp(M), and every eigenvalue λ ∈ Sp(M) satisfies |λ| ⩽ 1.",
+        "source_hint": "Page 11"
+      },
+      {
+        "question": "Let P ∈ M_n(R) be a projection matrix (satisfying P^2 = P). What inclusion holds for its spectrum Sp(P)?",
+        "choices": [
+          "Sp(P) ⊂ {-1, 1}",
+          "Sp(P) ⊂ {0, 1}",
+          "Sp(P) ⊂ {0}",
+          "Sp(P) ⊂ {-1, 0, 1}"
+        ],
+        "answer_index": 1,
+        "explanation": "Exercise 33 explicitly states to show that P is diagonalizable and that Sp(P) ⊂ {0, 1}.",
+        "source_hint": "Page 13"
+      },
+      {
+        "question": "Let N ∈ N_n(R) be a nilpotent matrix. What is the spectrum Sp(N)?",
+        "choices": [
+          "Sp(N) = {0}",
+          "Sp(N) = ∅",
+          "Sp(N) = {0, 1}",
+          "Sp(N) = {-1, 1}"
+        ],
+        "answer_index": 0,
+        "explanation": "For any nilpotent matrix N, its spectrum is Sp(N) = {0}, and its determinant and trace are both 0.",
+        "source_hint": "Page 13"
+      }
+    ]
+  },
+  "meta": {
+    "strategy": "single_pass",
+    "chunks": 1,
+    "input_tokens_estimate": 4892,
+    "model": "gemini-flash-latest",
+    "retried": false,
+    "user_context": {
+      "num_items": 5
+    },
+    "warnings": []
+  }
+}
